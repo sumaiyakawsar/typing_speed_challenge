@@ -20,12 +20,12 @@ export const useTypingTimer = (started, finished, mode, startTime, setFinished, 
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [started, finished, mode]);
+    }, [started, finished, mode, setFinished]);
 
     // Reset timer when mode changes
     useEffect(() => {
         setTimeLeft(mode === "timed" ? duration : 0);
-    }, [mode]);
+    }, [mode, duration]);
 
     return [timeLeft, setTimeLeft];
 };

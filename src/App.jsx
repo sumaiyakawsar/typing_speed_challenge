@@ -25,6 +25,7 @@ export default function App() {
   const [passageIndex, setPassageIndex] = useState(0);
   const [showHistory, setShowHistory] = useState(false);
   const [resultType, setResultType] = useState(null);  // "baseline" | "highscore" | "normal"
+  const [duration, setDuration] = useState(60); // default 60s
 
   const passage = data[difficulty][passageIndex].text;
   const inputRef = useRef(null);
@@ -41,7 +42,7 @@ export default function App() {
       netWPM,
       difficulty,
       mode,
-      duration: elapsedSeconds || 60
+      duration
     });
 
   }, [finished]);
@@ -60,7 +61,7 @@ export default function App() {
   const { correctChars, currentErrors, elapsed, wpm, accuracy, netWPM, history } =
     useTypingStats(input, passage, totalTypedCharacters, totalErrors, started, startTime, finished, elapsedSeconds);
 
-  const [timeLeft, setTimeLeft] = useTypingTimer(started, finished, mode, startTime, setFinished);
+  const [timeLeft, setTimeLeft] = useTypingTimer(started, finished, mode, startTime, setFinished, duration);
 
   // End test if passage is completed
   useEffect(() => {
@@ -92,7 +93,7 @@ export default function App() {
     setStartTime(null);
     setElapsedSeconds(0);
     // Reset timer depending on mode
-    setTimeLeft(mode === "timed" ? 60 : 0);
+    setTimeLeft(mode === "timed" ? duration : 0);
     // Pick a NEW random passage
     setPassageIndex(getRandomIndex(data, difficulty));
 
@@ -137,6 +138,8 @@ export default function App() {
         setDifficulty={setDifficulty}
         mode={mode}
         setMode={setMode}
+        duration={duration}
+        setDuration={setDuration}
         restartTest={restartTest}
       />
 
