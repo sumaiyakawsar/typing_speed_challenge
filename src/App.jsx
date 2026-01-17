@@ -26,8 +26,11 @@ export default function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [resultType, setResultType] = useState(null);  // "baseline" | "highscore" | "normal"
   const [duration, setDuration] = useState(60); // default 60s
+  const [category, setCategory] = useState("quotes"); // default category
 
-  const passage = data[difficulty][passageIndex].text;
+  // const passage = data[difficulty][passageIndex].text;
+  const passage = data[category][difficulty][passageIndex].text;
+
   const inputRef = useRef(null);
   const { addEntry } = useTypingHistory();
 
@@ -42,7 +45,8 @@ export default function App() {
       netWPM,
       difficulty,
       mode,
-      duration
+      duration,
+      category
     });
 
   }, [finished]);
@@ -95,7 +99,8 @@ export default function App() {
     // Reset timer depending on mode
     setTimeLeft(mode === "timed" ? duration : 0);
     // Pick a NEW random passage
-    setPassageIndex(getRandomIndex(data, difficulty));
+    // setPassageIndex(getRandomIndex(data, difficulty));
+    setPassageIndex(getRandomIndex(data[category], difficulty));
 
     resetTracker();
 
@@ -103,10 +108,11 @@ export default function App() {
     setTimeout(() => inputRef.current?.focus(), 0);
   };
 
+
   useEffect(() => {
-    setPassageIndex(getRandomIndex(data, difficulty));
+    setPassageIndex(getRandomIndex(data[category], difficulty));
     restartTest();
-  }, [difficulty]);
+  }, [category, difficulty]);
 
   useEffect(() => {
     if (!finished) return;
@@ -140,6 +146,8 @@ export default function App() {
         setMode={setMode}
         duration={duration}
         setDuration={setDuration}
+        category={category}
+        setCategory={setCategory}
         restartTest={restartTest}
       />
 
@@ -180,7 +188,7 @@ export default function App() {
           accuracy={accuracy}
           correctChars={correctChars}
           errorChars={input.length - correctChars}
-          restartTest={restartTest} 
+          restartTest={restartTest}
           resultType={resultType}
           history={history}
         />

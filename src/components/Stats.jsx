@@ -9,9 +9,12 @@ const Stats = ({
     difficulty,
     setDifficulty,
     mode,
-    setMode, 
+    setMode,
     duration,
     setDuration,
+    category,
+
+setCategory,
     restartTest
 }) => (
     <div className="flex flex-col md:flex-row md:flex-wrap items-center gap-4 md:gap-6 border-b border-white/5 py-4 text-sm text-gray-300">
@@ -86,6 +89,23 @@ const Stats = ({
                     Passage
                 </button>
             </div>
+            <div className="flex items-center gap-2">
+                <span className="text-gray-400">Category:</span>
+                {["quotes", "lyrics", "code"].map((c) => (
+                    <button
+                        key={c}
+                        onClick={() => setCategory(c)}
+                        className={`px-3 py-1 rounded-md border transition
+        ${category === c
+                                ? "border-green-400 text-green-300"
+                                : "border-white/10 hover:border-white/20"
+                            }`}
+                    >
+                        {c[0].toUpperCase() + c.slice(1)}
+                    </button>
+                ))}
+            </div>
+
             {/* DURATION */}
             {mode === "timed" && (
                 <div className="flex items-center gap-2">
