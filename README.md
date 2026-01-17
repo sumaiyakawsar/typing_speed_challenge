@@ -93,9 +93,9 @@ The personal best score should persist across browser sessions using `localStora
 -[x] Responsive layout with proper hover and focus states
 
  Ideas to push further:
+-[x] Historical tracking of your WPM and accuracy over time
+-[x] Shareable result cards for social media
 -[] Multiple test durations (15s, 30s, 60s, 120s)
 -[] Different text categories: quotes, lyrics, code snippets
--[] Historical tracking of your WPM and accuracy over time
 -[] A keyboard heatmap showing where you make mistakes
--[] Shareable result cards for social media
 -[] Add sounds

@@ -1,5 +1,5 @@
-import DifficultyDropdown from "./DifficultyDropdown";
-import ModeDropdown from "./ModeDropdown";
+import DifficultyDropdown from "./Dropdowns/DifficultyDropdown";
+import ModeDropdown from "./Dropdowns/ModeDropdown";
 import { VscDebugRestart } from "react-icons/vsc";
 
 const Stats = ({

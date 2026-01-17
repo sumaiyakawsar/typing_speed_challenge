@@ -12,11 +12,4 @@ export const setBestNetWPM = (diff, value) => {
     bests[diff] = value;
     localStorage.setItem("bestNetWPMs", JSON.stringify(bests));
 };
-// export function updatePersonalBest(wpm) {
-//     const best = Number(localStorage.getItem("bestWPM") || 0);
-//     if (wpm > best) {
-//         localStorage.setItem("bestWPM", wpm);
-//         return true;
-//     }
-//     return false;
-// }
+ 

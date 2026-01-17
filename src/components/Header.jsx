@@ -1,9 +1,7 @@
-
-
 import desktopLogo from "../assets/logo-large.svg";
 import mobileLogo from "../assets/logo-small.svg";
 
-const Header = ({ best, wpm }) => (
+const Header = ({ best, wpm, openHistory }) => (
     <header className="flex justify-between items-center py-6">
         <div>
             {/* Desktop logo */}
@@ -24,6 +22,14 @@ const Header = ({ best, wpm }) => (
             <span className="font-semibold">
                 {Math.max(best, wpm).toFixed(0)} WPM
             </span>
+
+            <button
+                onClick={openHistory}
+                className="px-3 py-2 rounded-lg border border-white/10 hover:border-white/30"
+            >
+                📊 History
+            </button>
+
         </div>
     </header>
 );

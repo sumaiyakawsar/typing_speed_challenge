@@ -1,6 +1,9 @@
 import ConfettiEffect from "./Confetti";
 import { FaCheck } from "react-icons/fa";
 import { LuPartyPopper } from "react-icons/lu";
+import TypingHistoryChart from "./TypingHistoryChart";
+import { useRef } from "react";
+import { toPng } from "html-to-image";
 
 export default function ResultModal({
     wpm,
@@ -8,54 +11,86 @@ export default function ResultModal({
     correctChars,
     errorChars,
     restartTest,
-    isFirstTest,
-    isHighScore
+    resultType,
+    history
 }) {
 
-    // Explicitly handle all three cases
-    // Determine icon and colors 
-    let Icon, iconBg, iconInner, iconShadow;
+    const cardRef = useRef(null);
 
-    if (isFirstTest) {
-        // Baseline — always tick, ignore high score
-        Icon = FaCheck;
-        iconBg = "bg-green-500/20";
-        iconInner = "bg-green-500";
-        iconShadow = "shadow-[0_0_40px_rgba(34,197,94,0.35)]";
-    } else if (isHighScore) {
-        // Only real high scores get party popper
-        Icon = LuPartyPopper;
-        iconBg = "bg-amber-500/20";
-        iconInner = "bg-amber-400";
-        iconShadow = "shadow-[0_0_40px_rgba(245,158,11,0.35)]";
-    } else {
-        // Normal run
-        Icon = FaCheck;
-        iconBg = "bg-green-500/20";
-        iconInner = "bg-green-500";
-        iconShadow = "shadow-[0_0_40px_rgba(34,197,94,0.35)]";
-    }
+    const handleShare = async () => {
+        if (!cardRef.current) return;
+
+        try {
+            const dataUrl = await toPng(cardRef.current, { cacheBust: true });
+            const link = document.createElement("a");
+            link.download = "typing-result.png";
+            link.href = dataUrl;
+            link.click();
+        } catch (err) {
+            console.error("Failed to generate shareable image", err);
+        }
+    };
+
+    const isBaseline = resultType === "baseline";
+    const isHighScore = resultType === "highscore";
+
+    const Icon = isHighScore ? LuPartyPopper : FaCheck;
+
+    const STYLE_MAP = {
+        baseline: {
+            bg: "bg-green-500/20",
+            inner: "bg-green-500",
+            shadow: "shadow-[0_0_40px_rgba(34,197,94,0.35)]"
+        },
+        highscore: {
+            bg: "bg-amber-500/20",
+            inner: "bg-amber-400",
+            shadow: "shadow-[0_0_40px_rgba(245,158,11,0.35)]"
+        },
+        normal: {
+            bg: "bg-green-500/20",
+            inner: "bg-green-500",
+            shadow: "shadow-[0_0_40px_rgba(34,197,94,0.35)]"
+        }
+    };
+
+
+    const iconStyles = STYLE_MAP[resultType] || STYLE_MAP.normal;
+
+    const { bg: iconBg, inner: iconInner, shadow: iconShadow } = iconStyles;
 
 
 
-    const resultTitle = isFirstTest
-        ? "Baseline Established!"
-        : isHighScore
-            ? "High Score Smashed!"
-            : "Test Complete";
 
-    const resultSubtitle = isFirstTest
-        ? "You've set your starting point. Now let's improve."
-        : isHighScore
-            ? "You're getting faster. That was incredible typing."
-            : "Solid run. Keep pushing to beat your high score.";
-    const ctaText = isFirstTest || isHighScore
-        ? "Beat This Score ↻"
-        : "Go Again ↻";
+
+
+
+
+    const TITLE_MAP = {
+        baseline: "Baseline Established!",
+        highscore: "High Score Smashed!",
+        normal: "Test Complete"
+    };
+
+    const SUBTITLE_MAP = {
+        baseline: "You've set your starting point. Now let's improve.",
+        highscore: "You're getting faster. That was incredible typing.",
+        normal: "Solid run. Keep pushing to beat your high score."
+    };
+
+    const resultTitle = TITLE_MAP[resultType] || TITLE_MAP.normal;
+    const resultSubtitle = SUBTITLE_MAP[resultType] || SUBTITLE_MAP.normal;
+
+    const ctaText =
+        isBaseline || isHighScore
+            ? "Beat This Score ↻"
+            : "Go Again ↻";
 
     return (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center">
-            <div className="text-center max-w-lg w-full px-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center">
+
+
+            <div ref={cardRef} className="text-center max-w-lg w-full px-6">
 
                 {/* SUCCESS ICON */}
 
@@ -93,16 +128,28 @@ export default function ResultModal({
                     />
                 </div>
 
+                <div className="my-6 w-full h-52">
+                    <TypingHistoryChart history={history} />
+                </div>
+
+                {resultType === "highscore" && <ConfettiEffect />}
+            </div>
+
+            <div className="flex justify-center gap-4 mt-4 w-full max-w-lg">
                 {/* CTA */}
                 <button
                     onClick={restartTest}
                     className="bg-white text-black px-8 py-3 rounded-xl font-semibold
-  hover:bg-gray-200 transition shadow-lg"
+  hover:bg-gray-200 transition shadow-lg cursor-pointer"
                 >
                     {ctaText}
                 </button>
-                {!isFirstTest && isHighScore && <ConfettiEffect />}
-
+                <button
+                    onClick={handleShare}
+                    className="bg-blue-500 cursor-pointer text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
+                >
+                    Share
+                </button>
             </div>
         </div>
     );

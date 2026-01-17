@@ -9,9 +9,11 @@ import StartButton from "./components/StartButton";
 import { useTypingTimer } from "./hooks/useTypingTimer";
 import { useTypingStats } from "./hooks/useTypingStats";
 import { useTypingTracker } from "./hooks/useTypingTracker";
+import { useTypingHistory } from "./hooks/useTypingHistory";
 
 import { getRandomIndex } from "./utils/helpers";
 import { getBestNetWPM, setBestNetWPM } from "./utils/storage";
+import HistorySidebar from "./components/History/HistorySideBar";
 
 export default function App() {
   const [difficulty, setDifficulty] = useState("easy");
@@ -21,9 +23,28 @@ export default function App() {
   const [startTime, setStartTime] = useState(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [passageIndex, setPassageIndex] = useState(0);
+  const [showHistory, setShowHistory] = useState(false);
+  const [resultType, setResultType] = useState(null);  // "baseline" | "highscore" | "normal"
 
   const passage = data[difficulty][passageIndex].text;
   const inputRef = useRef(null);
+  const { addEntry } = useTypingHistory();
+
+  useEffect(() => {
+    if (!finished) return;
+
+    addEntry({
+      id: crypto.randomUUID(),
+      date: Date.now(),
+      wpm,
+      accuracy,
+      netWPM,
+      difficulty,
+      mode,
+      duration: elapsedSeconds || 60
+    });
+
+  }, [finished]);
 
   // Start the test
   const startTest = () => {
@@ -32,11 +53,11 @@ export default function App() {
     setStarted(true);
     inputRef.current?.focus();
   };
-// Typing state
+  // Typing state
   const { input, totalTypedCharacters, totalErrors, handleInputChange, resetTracker } =
     useTypingTracker(passage, started, finished);
 
-  const { correctChars, currentErrors, elapsed, wpm, accuracy, netWPM } =
+  const { correctChars, currentErrors, elapsed, wpm, accuracy, netWPM, history } =
     useTypingStats(input, passage, totalTypedCharacters, totalErrors, started, startTime, finished, elapsedSeconds);
 
   const [timeLeft, setTimeLeft] = useTypingTimer(started, finished, mode, startTime, setFinished);
@@ -59,6 +80,7 @@ export default function App() {
     finished &&
     isEligibleForHighScore &&
     netWPM > bestNetWPM;
+
   useEffect(() => {
     if (isHighScore) setBestNetWPM(difficulty, netWPM);
   }, [isHighScore]);
@@ -85,9 +107,28 @@ export default function App() {
     restartTest();
   }, [difficulty]);
 
+  useEffect(() => {
+    if (!finished) return;
+
+    if (bestNetWPM === 0) {
+      setResultType("baseline");
+      setBestNetWPM(difficulty, netWPM);
+    } else if (accuracy >= 95 && netWPM > bestNetWPM) {
+      setResultType("highscore");
+      setBestNetWPM(difficulty, netWPM);
+    } else {
+      setResultType("normal");
+    }
+  }, [finished]);
+
+
   return (
     <div className="min-h-screen bg-linear-to-b from-[#0b0b0c] to-[#111] text-white px-8">
-      <Header best={bestNetWPM} wpm={wpm} />
+      <Header best={bestNetWPM} wpm={wpm} openHistory={() => setShowHistory(true)} />
+      {showHistory && (
+        <HistorySidebar onClose={() => setShowHistory(false)} />
+      )}
+
       <Stats
         wpm={wpm}
         accuracy={accuracy}
@@ -100,10 +141,7 @@ export default function App() {
       />
 
       {/* PASSAGE WRAPPER */}
-      <div className="relative mt-12 max-w-5xl mx-auto" onClick={() => {
-        startTest();
-        inputRef.current.focus();
-      }}>
+      <div className="relative mt-12 max-w-5xl mx-auto" onClick={startTest}>
 
         {/* Passage */}
         <Passage
@@ -139,9 +177,9 @@ export default function App() {
           accuracy={accuracy}
           correctChars={correctChars}
           errorChars={input.length - correctChars}
-          restartTest={restartTest}
-          isFirstTest={finished && bestNetWPM === 0}
-          isHighScore={isHighScore}
+          restartTest={restartTest} 
+          resultType={resultType}
+          history={history}
         />
       )}
     </div>
