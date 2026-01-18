@@ -22,7 +22,7 @@ const DifficultyDropdown = ({ difficulty, setDifficulty }) => {
             {open && (
                 <div
                     className="absolute top-full mb-2 w-full rounded-md
-          bg-[#111] border border-white/10 shadow-lg z-50"
+          bg-[#111] border border-white/10 shadow-lg z-50 mt-1"
                 >
                     {["easy", "medium", "hard"].map(d => (
                         <button

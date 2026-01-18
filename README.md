@@ -97,5 +97,5 @@ The personal best score should persist across browser sessions using `localStora
 -[x] Shareable result cards for social media
 -[x] Multiple test durations (15s, 30s, 60s, 120s)
 -[x] Different text categories: quotes, lyrics, code snippets
+-[x] Add sounds
 -[] A keyboard heatmap showing where you make mistakes
--[] Add sounds

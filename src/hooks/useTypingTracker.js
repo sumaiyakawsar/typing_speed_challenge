@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export const useTypingTracker = (passage, started, finished) => {
     const [input, setInput] = useState("");
+    const [lastKey, setLastKey] = useState(null);
 
     // Track all keystrokes (including backspaced errors)
     const [totalTypedCharacters, setTotalTypedCharacters] = useState(0);
@@ -18,20 +19,25 @@ export const useTypingTracker = (passage, started, finished) => {
             const typedChar = newValue[newValue.length - 1];
             const expectedChar = passage[newValue.length - 1];
 
+            setLastKey(typedChar); // 👈 IMPORTANT
+
             // Track all typed characters
             setTotalTypedCharacters((prev) => prev + 1);
             // If character is wrong, count it as an error
             if (typedChar !== expectedChar) setTotalErrors((prev) => prev + 1);
+        } else {
+            // Backspace or programmatic change
+            setLastKey(null);
         }
 
         setInput(newValue);
     };
 
     const resetTracker = () => {
-        setInput("");
+        setInput(""); setLastKey(null);
         setTotalTypedCharacters(0);
         setTotalErrors(0);
     };
 
-    return { input, setInput, totalTypedCharacters, totalErrors, handleInputChange, resetTracker };
+    return { input, setInput, lastKey, totalTypedCharacters, totalErrors, handleInputChange, resetTracker };
 };

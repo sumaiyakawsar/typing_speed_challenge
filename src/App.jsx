@@ -10,6 +10,7 @@ import { useTypingTimer } from "./hooks/useTypingTimer";
 import { useTypingStats } from "./hooks/useTypingStats";
 import { useTypingTracker } from "./hooks/useTypingTracker";
 import { useTypingHistory } from "./hooks/useTypingHistory";
+import { useTypingSounds } from "./hooks/useTypingSounds";
 
 import { getRandomIndex } from "./utils/helpers";
 import { getBestNetWPM, setBestNetWPM } from "./utils/storage";
@@ -27,9 +28,11 @@ export default function App() {
   const [resultType, setResultType] = useState(null);  // "baseline" | "highscore" | "normal"
   const [duration, setDuration] = useState(60); // default 60s
   const [category, setCategory] = useState("quotes"); // default category
+  const [soundOn, setSoundOn] = useState(true);
 
   // const passage = data[difficulty][passageIndex].text;
   const passage = data[category][difficulty][passageIndex].text;
+
 
   const inputRef = useRef(null);
   const { addEntry } = useTypingHistory();
@@ -59,13 +62,15 @@ export default function App() {
     inputRef.current?.focus();
   };
   // Typing state
-  const { input, totalTypedCharacters, totalErrors, handleInputChange, resetTracker } =
+  const { input, lastKey, totalTypedCharacters, totalErrors,
+    handleInputChange, resetTracker } =
     useTypingTracker(passage, started, finished);
 
   const { correctChars, currentErrors, elapsed, wpm, accuracy, netWPM, history } =
     useTypingStats(input, passage, totalTypedCharacters, totalErrors, started, startTime, finished, elapsedSeconds);
 
   const [timeLeft, setTimeLeft] = useTypingTimer(started, finished, mode, startTime, setFinished, duration);
+
 
   // End test if passage is completed
   useEffect(() => {
@@ -128,10 +133,25 @@ export default function App() {
     }
   }, [finished]);
 
+  useTypingSounds({
+    input, lastKey,
+    passage,
+    timeLeft,
+    started,
+    finished,
+    isHighScore,
+    soundOn
+  });
 
   return (
     <div className="min-h-screen bg-linear-to-b from-[#0b0b0c] to-[#111] text-white px-8">
-      <Header best={bestNetWPM} wpm={wpm} openHistory={() => setShowHistory(true)} />
+      <Header
+        best={bestNetWPM}
+        wpm={wpm}
+        openHistory={() => setShowHistory(true)}
+        soundOn={soundOn}
+        setSoundOn={setSoundOn}
+      />
       {showHistory && (
         <HistorySidebar onClose={() => setShowHistory(false)} />
       )}
