@@ -5,18 +5,21 @@ import Stats from "./components/Stats";
 import ResultModal from "./components/ResultModal";
 import Passage from "./components/Passage";
 import StartButton from "./components/StartButton";
-
+import HistorySidebar from "./components/History/HistorySideBar";
+ 
 import { useTypingTimer } from "./hooks/useTypingTimer";
 import { useTypingStats } from "./hooks/useTypingStats";
 import { useTypingTracker } from "./hooks/useTypingTracker";
 import { useTypingHistory } from "./hooks/useTypingHistory";
 import { useTypingSounds } from "./hooks/useTypingSounds";
+import { useKeyErrors } from "./hooks/useKeyErrors";
 
 import { getRandomIndex } from "./utils/helpers";
 import { getBestNetWPM, setBestNetWPM } from "./utils/storage";
-import HistorySidebar from "./components/History/HistorySideBar";
+import Footer from "./components/Footer";
 
 export default function App() {
+
   const [difficulty, setDifficulty] = useState("easy");
   const [mode, setMode] = useState("timed");
   const [started, setStarted] = useState(false);
@@ -27,10 +30,10 @@ export default function App() {
   const [showHistory, setShowHistory] = useState(false);
   const [resultType, setResultType] = useState(null);  // "baseline" | "highscore" | "normal"
   const [duration, setDuration] = useState(60); // default 60s
-  const [category, setCategory] = useState("quotes"); // default category
+  const [category, setCategory] = useState("quotes");  
   const [soundOn, setSoundOn] = useState(true);
+  const [heatmapKey, setHeatmapKey] = useState(0);
 
-  // const passage = data[difficulty][passageIndex].text;
   const passage = data[category][difficulty][passageIndex].text;
 
 
@@ -56,15 +59,19 @@ export default function App() {
 
   // Start the test
   const startTest = () => {
-    if (started) return;
-    setStartTime(Date.now());
-    setStarted(true);
-    inputRef.current?.focus();
+    if (!started) {
+      setStartTime(Date.now());
+      setStarted(true);
+    }
+    inputRef.current?.focus(); // always refocus
   };
+
+  const { keyErrors, recordError, resetErrors } = useKeyErrors();
+
   // Typing state
   const { input, lastKey, totalTypedCharacters, totalErrors,
     handleInputChange, resetTracker } =
-    useTypingTracker(passage, started, finished);
+    useTypingTracker(passage, started, finished, recordError);
 
   const { correctChars, currentErrors, elapsed, wpm, accuracy, netWPM, history } =
     useTypingStats(input, passage, totalTypedCharacters, totalErrors, started, startTime, finished, elapsedSeconds);
@@ -103,11 +110,12 @@ export default function App() {
     setElapsedSeconds(0);
     // Reset timer depending on mode
     setTimeLeft(mode === "timed" ? duration : 0);
-    // Pick a NEW random passage
-    // setPassageIndex(getRandomIndex(data, difficulty));
+    // Pick a NEW random passage 
     setPassageIndex(getRandomIndex(data[category], difficulty));
 
     resetTracker();
+    resetErrors(); // Clear heatmap on restart
+    setHeatmapKey(prev => prev + 1); // forces KeyboardHeatmap remount
 
     // Focus input after restart
     setTimeout(() => inputRef.current?.focus(), 0);
@@ -172,14 +180,17 @@ export default function App() {
       />
 
       {/* PASSAGE WRAPPER */}
-      <div className="relative mt-12 max-w-5xl mx-auto" onClick={startTest}>
+      <div className="relative mt-12  mx-auto " onClick={startTest} >
 
         {/* Passage */}
         <Passage
           passage={passage}
           input={input}
           started={started}
-          finished={finished} />
+          finished={finished} 
+          keyErrors={keyErrors}
+          heatmapKey={heatmapKey}
+          />
 
         {/* Start Button */}
         {!started && (
@@ -201,7 +212,8 @@ export default function App() {
           aria-label="Typing input"
         />
       </div>
-
+      {/* LIVE HEATMAP */}
+      {/* <KeyboardHeatmap keyErrors={keyErrors} /> */}
       {finished && (
         <ResultModal
           wpm={wpm}
@@ -213,6 +225,7 @@ export default function App() {
           history={history}
         />
       )}
+      <Footer/>
     </div>
   );
 }

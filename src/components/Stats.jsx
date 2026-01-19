@@ -59,7 +59,23 @@ const Stats = ({
                         </button>
                     ))}
                 </div>
-
+                {/* Category */}
+                <div className="flex items-center gap-2">
+                    <span className="text-gray-400">Category:</span>
+                    {["quotes", "lyrics", "code"].map((c) => (
+                        <button
+                            key={c}
+                            onClick={() => setCategory(c)}
+                            className={`px-3 py-1 rounded-md border transition
+        ${category === c
+                                    ? "border-green-400 text-green-300"
+                                    : "border-white/10 hover:border-white/20"
+                                }`}
+                        >
+                            {c[0].toUpperCase() + c.slice(1)}
+                        </button>
+                    ))}
+                </div>
                 {/* MODE */}
                 <div className="flex items-center gap-2">
                     <span className="text-gray-400">Mode:</span>
@@ -88,23 +104,7 @@ const Stats = ({
                         Passage
                     </button>
                 </div>
-                {/* Category */}
-                <div className="flex items-center gap-2">
-                    <span className="text-gray-400">Category:</span>
-                    {["quotes", "lyrics", "code"].map((c) => (
-                        <button
-                            key={c}
-                            onClick={() => setCategory(c)}
-                            className={`px-3 py-1 rounded-md border transition
-        ${category === c
-                                    ? "border-green-400 text-green-300"
-                                    : "border-white/10 hover:border-white/20"
-                                }`}
-                        >
-                            {c[0].toUpperCase() + c.slice(1)}
-                        </button>
-                    ))}
-                </div>
+
 
                 {/* DURATION */}
                 {mode === "timed" && (
