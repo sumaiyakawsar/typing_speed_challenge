@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import useSound from "use-sound";
 
-import typingMp3 from "/sounds/typing.wav";
-import errorMp3 from "/sounds/error.mp3";
-import countdownMp3 from "/sounds/countdown.mp3";
-import finishMp3 from "/sounds/finish.wav";
-import highscoreMp3 from "/sounds/highscore.wav";
+import typingMp3 from "../assets/sounds/typing.wav";
+import errorMp3 from "../assets/sounds/error.mp3";
+import countdownMp3 from "../assets/sounds/countdown.mp3";
+import finishMp3 from "../assets/sounds/finish.wav";
+import highscoreMp3 from "../assets/sounds/highscore.wav";
+import { useSoundSettings } from "./useSoundSettings";
 
 export const useTypingSounds = ({
     input,
@@ -14,7 +15,7 @@ export const useTypingSounds = ({
     started,
     finished,
     isHighScore,
-    soundOn,
+    mode
 }) => {
     // ALWAYS load hooks
     const [playTyping] = useSound(typingMp3, { volume: 0.15 });
@@ -22,6 +23,7 @@ export const useTypingSounds = ({
     const [playCountdown] = useSound(countdownMp3, { volume: 0.5 });
     const [playFinish] = useSound(finishMp3, { volume: 0.5 });
     const [playHighscore] = useSound(highscoreMp3, { volume: 0.7 });
+    const { soundOn } = useSoundSettings();
 
     // Typing sound
     useEffect(() => {
@@ -32,16 +34,18 @@ export const useTypingSounds = ({
         if (i < 0) return;
 
         input[i] === passage[i] ? playTyping() : playError();
-    }, [input, soundOn]);
+    }, [finished, input, passage, playError, playTyping, soundOn, started]);
 
     // Countdown sound
     useEffect(() => {
-        if (!soundOn || !started || finished) return;
+        if (!soundOn) return;
+        if (mode !== "timed") return; // 🚫 no sound in passage mode
+        if (!started || finished) return;
 
         if (timeLeft <= 10 && timeLeft > 0) {
             playCountdown();
         }
-    }, [timeLeft, soundOn]);
+    }, [timeLeft, soundOn, mode, started, finished, playCountdown]);
 
     // Finish / high score
     useEffect(() => {
@@ -49,5 +53,5 @@ export const useTypingSounds = ({
 
         playFinish();
         if (isHighScore) playHighscore();
-    }, [finished, isHighScore, soundOn]);
+    }, [finished, isHighScore, playFinish, playHighscore, soundOn]);
 };
