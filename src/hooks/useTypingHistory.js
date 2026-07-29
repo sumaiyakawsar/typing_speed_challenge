@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getTypingHistory, saveTypingResult } from "../utils/history";
+import { getTypingHistory, saveTypingResult } from "../features/history/utils/historyStorage";
 
 export const useTypingHistory = () => {
     const [history, setHistory] = useState(getTypingHistory());
