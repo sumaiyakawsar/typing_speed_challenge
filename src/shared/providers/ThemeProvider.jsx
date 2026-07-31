@@ -8,67 +8,44 @@ import { useColorMode } from "../../features/theme/hooks/useColorMode";
 
 export const ThemeProvider = ({ children }) => {
 
-
     const [currentTheme, setCurrentTheme] = useState(() => {
-
-        const saved =
-            localStorage.getItem("typing-theme");
-
+        const saved = localStorage.getItem("typing-theme");
 
         return saved && themes[saved]
             ? saved
             : "cyberpunk";
-
     });
 
+    const [previewTheme, setPreviewTheme] = useState(null);
+
+    const { colorMode, setColorMode } = useColorMode();
 
 
-    const [previewTheme, setPreviewTheme] =
-        useState(null);
+    const theme = useMemo(() => {
 
- 
-    const activeTheme =
-        themes[previewTheme ?? currentTheme] ?? themes.cyberpunk;
+        const selected = themes[previewTheme ?? currentTheme] ?? themes.cyberpunk;
+        return selected[colorMode];
+
+    }, [currentTheme, previewTheme, colorMode]);
+
+
 
     useEffect(() => {
-
-        localStorage.setItem(
-            "typing-theme",
-            currentTheme
-        );
-
+        localStorage.setItem("typing-theme", currentTheme);
     }, [currentTheme]);
 
 
 
-    const {
-        colorMode,
-        setColorMode
-    } = useColorMode();
+    const value = useMemo(() => ({
+        currentTheme, setCurrentTheme,
 
+        previewTheme, setPreviewTheme,
 
+        theme, themes,
 
+        colorMode, setColorMode
 
-    const value = useMemo(
-        () => ({
-
-            currentTheme,
-            setCurrentTheme,
-
-            previewTheme,
-            setPreviewTheme,
- 
-
-            theme: activeTheme,
-
-            themes,
-
-            colorMode,
-            setColorMode
-
-        }),
-        [currentTheme, previewTheme, activeTheme, colorMode, setColorMode]
-    );
+    }), [currentTheme, previewTheme, theme, colorMode, setColorMode]);
 
 
     return (
