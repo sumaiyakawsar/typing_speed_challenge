@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { FaKeyboard } from "react-icons/fa";
+import { useTheme } from "../../../features/theme/hooks/useTheme";
+import { CgShortcut } from "react-icons/cg";
 
 const shortcuts = [
     ["Ctrl + M", "Toggle Sound"],
     ["Ctrl + H", "Open History"],
     ["Ctrl + C", "Cycle Theme"],
-    ["Ctrl + D", "Toggle Color Mode"]
+    ["Ctrl + D", "Toggle Color Mode"],
+    ["Ctrl + K", " Toggle Keyboard Heatmap"]
 ];
 
-const KeyboardShortcuts = ({ theme }) => {
+const KeyboardShortcuts = () => {
     const [open, setOpen] = useState(false);
-
+    const { theme } = useTheme();
+    
     return (
         <div className="relative">
             <button
@@ -19,7 +22,7 @@ const KeyboardShortcuts = ({ theme }) => {
                 aria-label="Keyboard shortcuts"
                 title="Keyboard shortcuts"
                 className={`
-                    p-3
+                    p-2
                     rounded-lg
                     border-2
                     bg-black/60
@@ -30,7 +33,7 @@ const KeyboardShortcuts = ({ theme }) => {
                     hover:scale-105
                 `}
             >
-                <FaKeyboard size={16} />
+                <CgShortcut size={18} />
             </button>
 
             {open && (
@@ -43,24 +46,16 @@ const KeyboardShortcuts = ({ theme }) => {
 
                     <div
                         className={`
-                            absolute
-                            right-0
-                            mt-2
-                            w-72
-                            z-50
-
-                            rounded-2xl
-                            border
-                            ${theme.border}
-
+                            absolute  right-0
+                            mt-2  w-72 z-99
+                            rounded-2xl border ${theme.border}
                             bg-white/10
                             backdrop-blur-xl
-
                             shadow-2xl
                             overflow-hidden
                         `}
                     >
-                         
+
                         <div className="p-2">
                             {shortcuts.map(([key, description]) => (
                                 <div

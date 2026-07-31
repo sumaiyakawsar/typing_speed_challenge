@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { SoundContext } from "../../features/sound/context/SoundContext";
- 
 
 const STORAGE_KEY = "typing-sound";
 
@@ -19,12 +18,8 @@ export function SoundProvider({ children }) {
         setSoundOn((prev) => !prev);
     }, []);
 
-    const value = useMemo(
-        () => ({
-            soundOn,
-            setSoundOn,
-            toggleSound
-        }),
+
+    const value = useMemo(() => ({ soundOn, setSoundOn, toggleSound }),
         [soundOn, toggleSound]
     );
 

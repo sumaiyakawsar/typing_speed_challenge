@@ -4,12 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import { ThemeProvider } from './shared/providers/ThemeProvider.jsx'
 import { SoundProvider } from './shared/providers/SoundProvider.jsx'
+import NotificationProvider from './shared/providers/NotificationProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
       <SoundProvider>
-      <App />
+        <NotificationProvider/>
+          <App /> 
       </SoundProvider>
     </ThemeProvider>
   </StrictMode>,
