@@ -1,5 +1,6 @@
 import { HiOutlineTrendingUp } from "react-icons/hi";
 import { MdOutlineKeyboard } from "react-icons/md";
+import { useTheme } from "../../theme/hooks/useTheme";
 
 const keyboardRows = [
     ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="],
@@ -11,18 +12,43 @@ const keyboardRows = [
 ];
 
 export default function KeyboardHeatmap({ keyErrors }) {
+
+    const {
+        theme, colorMode
+    } = useTheme();
+
     const maxError = Math.max(...Object.values(keyErrors), 1);
 
-    const getColor = (key) => {
+    const getKeyStyle = (key) => {
         const errors = keyErrors[key] || 0;
-        const intensity = errors / maxError; // 0 to 1
+        const intensity = errors / maxError;
 
-        if (intensity === 0) return "bg-gray-700";
+        // Base themed key
+        const style = {
+            backgroundColor: theme.keyBg,
+            border: `1px solid ${theme.keyBorder}`,
+                     boxShadow: `0 0 8px ${theme.keyShadow}`,
+        };
 
-        const red = Math.floor(255 * intensity);
-        return `rgb(${red}, 50, 50)`; // inline style for gradient
+        // No errors
+        if (errors === 0) {
+            return style;
+        }
+
+        // Heatmap overlay
+        style.backgroundColor = `rgba(239, 68, 68, ${0.15 + intensity * 0.65})`;
+        style.border = `1px solid rgb(${255}, ${Math.round(
+            180 * (1 - intensity)
+        )}, ${Math.round(180 * (1 - intensity))})`;
+
+        style.boxShadow = `
+        0 0 8px ${theme.keyShadow},
+        0 0 ${10 + intensity * 20}px rgba(239,68,68,${0.4 + intensity * 0.5})
+    `;
+
+        return style;
     };
-    
+
     const getKeyWidth = (key) => {
         switch (key) {
             case "space":
@@ -34,13 +60,7 @@ export default function KeyboardHeatmap({ keyErrors }) {
 
     return (
         <div className="mt-6 flex-col gap-2 items-center hidden xl:flex">
-            <div className="flex items-center justify-between mb-4 w-full">
-                <div className="flex items-center gap-2">
-                    <MdOutlineKeyboard className="w-5 h-5 text-gray-400" />
-                    <h3 className="text-lg font-semibold text-white">Key Heatmap</h3>
-                </div>
-                <HiOutlineTrendingUp className="w-4 h-4 text-gray-500" />
-            </div>
+            
             {keyboardRows.map((row, i) => (
                 <div key={i} className="flex gap-1">
                     {row.map((key) => {
@@ -49,8 +69,12 @@ export default function KeyboardHeatmap({ keyErrors }) {
                             <div
                                 key={key}
                                 title={`Errors: ${count}`}
-                                style={{ backgroundColor: getColor(key) }}
-                                className={`${getKeyWidth(key)} shrink-0 h-14 rounded-md flex items-center justify-center text-white font-bold relative`}
+                                style={getKeyStyle(key)}
+                                className={`${getKeyWidth(key)} elevation-1 shrink-0 h-14 rounded-md flex items-center justify-center  relative  ${colorMode === "dark"
+                                    ? "text-white"
+                                    : `${theme.text}`
+                                    }
+                                        ${theme.shadow}`}
                             >
                                 <span>{key === "space" ? "Space" : key.toUpperCase()}</span>
                                 {count > 0 && (

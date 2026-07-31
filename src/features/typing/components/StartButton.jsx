@@ -11,7 +11,10 @@ export default function StartButton({ startTest }) {
             <div className="pointer-events-auto text-center">
 
                 <button
-                    onClick={startTest}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        startTest();
+                    }}
                     className={`
                         px-6 py-3
                         rounded-lg
@@ -24,9 +27,8 @@ export default function StartButton({ startTest }) {
 
                         ${theme.button}
                         ${theme.text}
-
+ ${theme.focus}
                         focus:outline-none
-                                              ${theme.focus}
                     `}
                 >
                     Start Typing Test

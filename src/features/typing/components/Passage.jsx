@@ -126,7 +126,7 @@ import {
 import { TbProgress } from "react-icons/tb";
 
 export default function Passage({ passage, input, started, finished, keyErrors, 
-    heatmapKey, category }) {
+    heatmapKey, category, showHeatmap }) {
     const isCode = category === "code";
 
   
@@ -224,9 +224,13 @@ export default function Passage({ passage, input, started, finished, keyErrors,
                 {/* Heatmap section */}
                 <div className="mt-8 max-w-4xl mx-auto">
 
-
-                    <KeyboardHeatmap keyErrors={keyErrors} key={heatmapKey} />
-
+ 
+                    {showHeatmap && (
+                        <KeyboardHeatmap
+                            key={heatmapKey}
+                            keyErrors={keyErrors}
+                        />
+                    )}
                     {/* Stats summary */}
                     {started && input.length > 0 && (
                         <div className="mt-6 p-4 bg-gray-800/30 rounded-xl border border-gray-700">

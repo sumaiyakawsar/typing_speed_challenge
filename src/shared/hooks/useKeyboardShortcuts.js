@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 
 export const useKeyboardShortcuts = ({
     toggleSound,
@@ -7,63 +7,120 @@ export const useKeyboardShortcuts = ({
     themes,
     currentTheme,
     setColorMode,
-    colorMode
+    colorMode,
+    toggleHeatmap
 }) => {
+
+    const callbacksRef = useRef({});
+
+    useEffect(() => {
+        callbacksRef.current = {
+            toggleSound,
+            openHistory,
+            setCurrentTheme,
+            themes,
+            currentTheme,
+            setColorMode,
+            colorMode,
+            toggleHeatmap
+        };
+    }, [
+        toggleSound,
+        openHistory,
+        setCurrentTheme,
+        themes,
+        currentTheme,
+        setColorMode,
+        colorMode,
+        toggleHeatmap
+    ]);
+
+
     const cycleTheme = useCallback(() => {
+        const {
+            themes,
+            currentTheme,
+            setCurrentTheme
+        } = callbacksRef.current;
+
         const themeList = Object.keys(themes);
+
         const currentIndex = themeList.indexOf(currentTheme);
 
         setCurrentTheme(
             themeList[(currentIndex + 1) % themeList.length]
         );
 
-    }, [themes, currentTheme, setCurrentTheme]);
+    }, []);
+
 
     useEffect(() => {
+
         const handler = (e) => {
 
             if (!e.ctrlKey) return;
 
             const key = e.key.toLowerCase();
 
+
             switch (key) {
-                // Ctrl + M → Mute
+
                 case "m":
                     e.preventDefault();
-                    toggleSound();
+                    callbacksRef.current.toggleSound();
                     break;
 
-                // Ctrl + H → Open History
+
                 case "h":
                     e.preventDefault();
-                    openHistory();
+                    callbacksRef.current.openHistory();
                     break;
 
-                // Ctrl + c → Change Theme
+
                 case "c":
                     e.preventDefault();
                     cycleTheme();
                     break;
-                    
-                // Ctrl + D → Dark/light
+
+
                 case "d":
                     e.preventDefault();
-                    setColorMode(
-                        colorMode === "dark"
+
+                    callbacksRef.current.setColorMode(
+                        callbacksRef.current.colorMode === "dark"
                             ? "light"
                             : "dark"
                     );
+
                     break;
+
+
+                case "k":
+                    e.preventDefault();
+                    callbacksRef.current.toggleHeatmap();
+                    break;
+
 
                 default:
                     break;
             }
         };
 
-        window.addEventListener("keydown", handler);
 
-        return () =>
-            window.removeEventListener("keydown", handler);
+        window.addEventListener(
+            "keydown",
+            handler
+        );
 
-    }, [openHistory, setCurrentTheme, themes, currentTheme, setColorMode, colorMode, cycleTheme, toggleSound]);
+
+        return () => {
+            window.removeEventListener(
+                "keydown",
+                handler
+            );
+        };
+
+
+    }, [cycleTheme]);
+
 };
