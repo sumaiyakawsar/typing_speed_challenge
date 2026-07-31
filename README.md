@@ -1,5 +1,3 @@
-# typing_speed_challenge
-
 # Frontend Mentor - Typing Speed Test
 
 ![Design preview for the Typing Speed Test coding challenge](./preview.jpg)
@@ -83,19 +81,19 @@ The personal best score should persist across browser sessions using `localStora
 
  Core requirements:
 
--[x] Start a test by clicking Start or just typing
--[x] Choose difficulty (Easy, Medium, Hard) and mode (Timed 60s or Passage)
--[x] See real-time WPM, accuracy, and time while typing
--[x] Get visual feedback: correct characters in green, errors in red/underlined, with a visible cursor
--[x] Backspace to fix mistakes (original errors still count against accuracy)
--[x] View results after each test with WPM, accuracy, and character counts
--[x] Track personal bests with localStorage – celebrate when you beat your high score
--[x] Responsive layout with proper hover and focus states
+- [x] Start a test by clicking Start or just typing
+- [x] Choose difficulty (Easy, Medium, Hard) and mode (Timed 60s or Passage)
+- [x] See real-time WPM, accuracy, and time while typing
+- [x] Get visual feedback: correct characters in green, errors in red/underlined, with a visible cursor
+- [x] Backspace to fix mistakes (original errors still count against accuracy)
+- [x] View results after each test with WPM, accuracy, and character counts
+- [x] Track personal bests with localStorage – celebrate when you beat your high score
+- [x] Responsive layout with proper hover and focus states
 
  Ideas to push further:
--[x] Historical tracking of your WPM and accuracy over time
--[x] Shareable result cards for social media
--[x] Multiple test durations (15s, 30s, 60s, 120s)
--[x] Different text categories: quotes, lyrics, code snippets
--[x] Add sounds
--[x] A keyboard heatmap showing where you make mistakes
+- [x] Historical tracking of your WPM and accuracy over time
+- [x] Shareable result cards for social media
+- [x] Multiple test durations (15s, 30s, 60s, 120s)
+- [x] Different text categories: quotes, lyrics, code snippets
+- [x] Add sounds
+- [x] A keyboard heatmap showing where you make mistakes
