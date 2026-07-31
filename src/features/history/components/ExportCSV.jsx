@@ -1,4 +1,9 @@
-const ExportCSV = ({ data }) => {
+import { notifications } from "../../notification/notifications";
+import { FaFileCsv } from "react-icons/fa6";
+
+const ExportCSV = ({ data, theme }) => {
+      
+    
     const exportCSV = () => {
         if (!data.length) return;
 
@@ -12,14 +17,16 @@ const ExportCSV = ({ data }) => {
         link.href = URL.createObjectURL(blob);
         link.download = "typing-history.csv";
         link.click();
+        notifications.exported();
     };
 
     return (
         <button
             onClick={exportCSV}
-            className="px-3 py-2 border border-white/10 rounded-md"
+            className={`px-3 py-2 border ${theme.border} rounded-md ${theme.text} `}
         >
-            ⬇ Export CSV
+            <FaFileCsv />
+
         </button>
     );
 };

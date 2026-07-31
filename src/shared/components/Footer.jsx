@@ -25,7 +25,7 @@ export default function Footer() {
 
 
     return (
-        <footer className="w-full z-20">
+        <footer className="w-full mt-auto z-20">
 
             <div
                 className={`

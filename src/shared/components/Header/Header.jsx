@@ -1,77 +1,47 @@
-import { useCallback } from "react";
+import desktopLogo from "../../../assets/logo-large.svg";
+import mobileLogo from "../../../assets/logo-small.svg";
 
-import desktopLogo from "../../assets/logo-large.svg";
-import mobileLogo from "../../assets/logo-small.svg";
-
-import {
-    FaVolumeUp,
-    FaVolumeMute,
-    FaChartLine,
-    FaMoon, FaKeyboard,
-    FaSun
-} from "react-icons/fa";
-
-import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
-import ThemeSelector from "../../features/theme/components/ThemeSelector";
+import ThemeSelector from "../../../features/theme/components/ThemeSelector";
 import KeyboardShortcuts from "./KeyboardShortcuts";
-import { useTheme } from "../../features/theme/hooks/useTheme";
-import { useSoundSettings } from "../../features/sound/hooks/useSoundSettings";
+
+import { FaVolumeUp, FaVolumeMute, FaChartLine, FaStar, FaMoon, FaKeyboard, FaSun} from "react-icons/fa";
+import { MdOutlineKeyboard } from "react-icons/md";
+import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
+import { useTheme } from "../../../features/theme/hooks/useTheme";
+import { useSoundSettings } from "../../../features/sound/hooks/useSoundSettings";
+import { useThemeNotifications } from "../../../features/notification/hooks/useThemeNotifications";
+import { useSoundNotifications } from "../../../features/notification/hooks/useSoundNotifications";
 
 
-const Header = ({
-    stats,
-    controls,
-    openHistory
-}) => {
+const Header = ({ stats, openHistory, toggleHeatmap, showHeatmap }) => {
+    const { best = 0, wpm = 0 } = stats;
+    const { soundOn, toggleSound } = useSoundSettings();
 
-
-    const {
-        best = 0,
-        wpm = 0
-    } = stats;
-
-
-    const {
-       
-        colorMode,
-        setColorMode
-    } = controls;
+    useSoundNotifications();
+    useThemeNotifications();
 
     const {
-        soundOn,
-        toggleSound
-    } = useSoundSettings();
-
-    const {
-        theme,
-        currentTheme,
-        themes,
-        setCurrentTheme
+        theme, currentTheme,
+        themes, setCurrentTheme,
+        colorMode, setColorMode
     } = useTheme();
 
     useKeyboardShortcuts({
         toggleSound,
         openHistory,
-        setCurrentTheme,
-        themes,
-        currentTheme,
-        setColorMode,
-        colorMode
+        themes, currentTheme, setCurrentTheme,
+        colorMode, setColorMode,
+        toggleHeatmap
     });
 
-    // const toggleSound = useCallback(() => {
-    //     setSoundOn(prev => !prev);
-    // }, [setSoundOn]);
 
-    const toggleColorMode = useCallback(() => {
+    const toggleColorMode = () => {
         setColorMode(prev =>
             prev === "dark"
                 ? "light"
                 : "dark"
         );
-    }, [setColorMode]);
-
-
+    };
 
     return (
         <header
@@ -130,23 +100,13 @@ const Header = ({
                     {/* WPM */}
                     <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-white/5 rounded-lg">
 
-                        <span className="text-amber-400/80">                            ★                        </span>
-
+                        <span className="text-amber-400/80"><FaStar /></span>
 
                         <div>
-
-                            <p className="text-xs text-gray-500">
-                                Best
-                            </p>
-
-
+                            <p className="text-xs text-gray-500"> Best   </p>
                             <p className="text-white font-medium">
-
                                 {Math.max(best, wpm).toFixed(0)}
-
-                                <span className="text-gray-400 text-sm ml-1">
-                                    WPM
-                                </span>
+                                <span className="text-gray-400 text-sm ml-1"> WPM </span>
                             </p>
                         </div>
                     </div>
@@ -161,7 +121,11 @@ const Header = ({
 
                     <button type="button"
                         onClick={toggleColorMode}
-                        aria-label="Toggle color mode"
+                        aria-label={
+                            colorMode === "dark"
+                                ? "Switch to light mode"
+                                : "Switch to dark mode"
+                        }
                         title="Toggle color mode"
                         className={`
                             p-3
@@ -177,13 +141,18 @@ const Header = ({
                     </button>
 
                     {/* Sound toggle */}
-
                     <button type="button"
                         onClick={toggleSound}
-                        aria-label="Toggle sound" title="Toggle sound"
+                        aria-label={
+                            soundOn
+                                ? "Disable typing sounds"
+                                : "Enable typing sounds"
+                        }
+
+                        title="Toggle sound"
                         className={`
-                           p-3 
-                           rounded-full 
+                           p-2
+                           rounded-lg 
                             ${soundOn
                                 ? `${theme.accent} shadow-lg ${theme.shadow}`
                                 : "text-gray-500  hover:text-gray-300"
@@ -195,22 +164,34 @@ const Header = ({
                                 : <FaVolumeMute size={18} />
                         }
                     </button>
-                    <KeyboardShortcuts theme={theme} />
 
 
+                    {/* Keyboard Heatmap Toggle */}
+                    <button
+                        type="button"
+                        onClick={toggleHeatmap}
+                        aria-label="Toggle keyboard heatmap"
+                        title="Toggle keyboard heatmap"
+                        className={`hidden xl:flex items-center justify-center p-2 rounded-lg transition-all duration-300 overflow-hidden 
+                              ${showHeatmap
+                                ? `${theme.accent} shadow-lg ${theme.shadow}`
+                                : "text-gray-500  hover:text-gray-300"
+                            } `}
+                    >
+                        <FaKeyboard size={18} />
+                    </button>
+
+                    <KeyboardShortcuts />
                     {/* History Button */}
                     <button
                         onClick={openHistory}
-                        aria-label="Open history"
+                        aria-label="Open history" 
+                        title="Open history"
                         className={`
-                            p-3
-                            rounded-lg
-                            border-2
-                            ${theme.border}
-                             bg-black/60  hover:${theme.border.replace('/50', '')} ${theme.text} group-hover:${theme.accent} transition-all duration-300 overflow-hidden
+                            p-2 rounded-lg border-2 transition-all duration-300 overflow-hidden
+                            ${theme.border} ${theme.text}   
                         `}
                     >
-
                         <FaChartLine size={16} />
                     </button>
                 </div>
