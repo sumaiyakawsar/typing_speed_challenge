@@ -17,35 +17,16 @@ import { formatTime } from "../../../shared/utils/helpers";
 
 
 const StatsMobile = ({
-    wpm,
-    accuracy,
-    timeLeft,
-
-    difficulty,
-    setDifficulty,
-
-    category,
-    setCategory,
-
-    mode,
-    setMode,
-
-    duration,
-    setDuration,
-
-    restartTest,
-
-    theme
+    wpm, accuracy, timeLeft,
+    difficulty, setDifficulty,  category, setCategory,
+    mode, setMode, duration, setDuration,
+    restartTest, theme
 }) => {
-
-
-
-
     return (
 
-        <div className="space-y-3 flex flex-col">
+        <div className="space-y-3 flex flex-col  ">
             {/* STATS BAR */}
-            <div className="sticky top-0 z-50 backdrop-blur-md">
+            <div className="sticky top-0 z-50 backdrop-blur-md bg-gray-900/50 rounded-b-lg">
 
                 <div
                     className={`
@@ -138,7 +119,7 @@ const StatsMobile = ({
             {/* SETTINGS */}
 
             <div
-                className=" flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-900/50 rounded-lg border border-gray-800
+                className=" flex flex-wrap items-center justify-between gap-3 p-3 bg-gray-900/50 rounded-lg
                 "
             >
                 {/* Difficulty */}

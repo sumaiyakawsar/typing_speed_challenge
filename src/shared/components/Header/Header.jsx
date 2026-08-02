@@ -57,10 +57,7 @@ const Header = ({ stats, openHistory, toggleHeatmap, showHeatmap }) => {
 
 
                 <div className="flex items-center gap-4">
-
-
                     <div className="relative group">
-
                         <div
                             className={`
                                 absolute -inset-1

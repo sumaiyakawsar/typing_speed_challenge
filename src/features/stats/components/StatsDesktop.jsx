@@ -1,62 +1,29 @@
-import { FiActivity, FiClock, FiTarget } from "react-icons/fi";
-import { FaHourglassEnd } from "react-icons/fa";
-import { VscDebugRestart } from "react-icons/vsc";
-import { MdOutlineWorkspacePremium } from "react-icons/md";
-import { TbCategory2, TbDeviceGamepad2 } from "react-icons/tb";
-
 import StatCard from "./StatCard";
 import OptionSelector from "./OptionSelector";
 
-import {
-    difficultyOptions,
-    categoryOptions,
-    modeOptions,
-    durationOptions
-} from "../config/statsConfig";
+
+import { difficultyOptions, categoryOptions, modeOptions, durationOptions } from "../config/statsConfig";
 import { formatTime } from "../../../shared/utils/helpers";
+
+import { MdOutlineWorkspacePremium, MdOutlineCategory } from "react-icons/md";
+import { LuActivity, LuTarget, LuClock, LuGamepad2 } from "react-icons/lu";
+import { FaHourglassEnd } from "react-icons/fa";
+import { VscDebugRestart } from "react-icons/vsc";
 
 
 const StatsDesktop = ({
-    wpm,
-    accuracy,
-    timeLeft,
-
-    difficulty,
-    setDifficulty,
-
-    category,
-    setCategory,
-
-    mode,
-    setMode,
-
-    duration,
-    setDuration,
-
+    wpm, accuracy, timeLeft,
+    difficulty, setDifficulty, category, setCategory,
+    mode, setMode, duration, setDuration,
     restartTest,
-
     theme
 }) => {
 
-
-
     return (
-
-        <div
-            className="
-            backdrop-blur-md
-            flex     flex-wrap
-            items-center
-            justify-between
-            px-4
-            py-3
-            bg-gray-900/50
-            rounded-lg
-            border
-            border-gray-800
-            "
+        <div className="backdrop-blur-md
+            flex flex-wrap items-center justify-between
+            px-4 py-3 bg-gray-900/50 rounded-b-lg"
         >
-
 
             {/* LEFT SIDE STATS */}
             <div className="flex items-center gap-6">
@@ -64,7 +31,7 @@ const StatsDesktop = ({
                 {/* WPM */}
                 <StatCard
                     icon={
-                        <FiActivity
+                        <LuActivity
                             className={`w-5 h-5 ${theme.icon} animate-pulse`}
                         />
                     }
@@ -79,7 +46,7 @@ const StatsDesktop = ({
                 {/* Accuracy */}
                 <StatCard
                     icon={
-                        <FiTarget
+                        <LuTarget
                             className={`w-5 h-5 ${theme.icon} animate-pulse`}
                         />
                     }
@@ -103,8 +70,6 @@ const StatsDesktop = ({
                     value={formatTime(timeLeft)}
                     theme={theme}
                 />
-
-
             </div>
 
 
@@ -116,7 +81,7 @@ const StatsDesktop = ({
                 <OptionSelector
                     icon={
                         <MdOutlineWorkspacePremium
-                            className={`w-3 h-3 ${theme.icon} animate-pulse`}
+                            className={`w-3 h-3 animate-pulse`}
                         />
                     }
                     label="DIFFICULTY"
@@ -132,8 +97,8 @@ const StatsDesktop = ({
                 {/* Category */}
                 <OptionSelector
                     icon={
-                        <TbCategory2
-                            className={`w-3 h-3 ${theme.icon} animate-pulse`}
+                        <MdOutlineCategory
+                            className={`w-3 h-3  animate-pulse`}
                         />
                     }
                     label="CATEGORY"
@@ -149,8 +114,8 @@ const StatsDesktop = ({
                 {/* Mode */}
                 <OptionSelector
                     icon={
-                        <TbDeviceGamepad2
-                            className={`w-3 h-3 ${theme.icon} animate-pulse`}
+                        <LuGamepad2
+                            className={`w-3 h-3  animate-pulse`}
                         />
                     }
                     label="MODE"
@@ -172,8 +137,8 @@ const StatsDesktop = ({
 
                             <OptionSelector
                                 icon={
-                                    <FiClock
-                                        className={`w-3 h-3 ${theme.icon} animate-pulse`}
+                                    <LuClock
+                                        className={`w-3 h-3 animate-pulse`}
                                     />
                                 }
                                 label="DURATION"

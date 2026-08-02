@@ -1,124 +1,63 @@
-import {
-    FiActivity,
-    FiTarget,
-    FiClock
-} from "react-icons/fi";
-
-import {
-    VscDebugRestart
-} from "react-icons/vsc";
-import { FaHourglassEnd } from "react-icons/fa";
-import {
-    TbDeviceGamepad2
-} from "react-icons/tb";
 import StatCard from "./StatCard";
 import OptionSelector from "./OptionSelector";
 
+import { LuActivity, LuTarget, LuGamepad2, LuClock } from "react-icons/lu";
+import { VscDebugRestart } from "react-icons/vsc";
+import { FaHourglassEnd } from "react-icons/fa";
+import { MdOutlineWorkspacePremium, MdOutlineCategory } from "react-icons/md";
+
 import {
-    difficultyOptions,
-    categoryOptions,
-    modeOptions,
-    durationOptions
+    difficultyOptions, categoryOptions, modeOptions, durationOptions
 } from "../config/statsConfig";
 import { formatTime } from "../../../shared/utils/helpers";
 
 
 const StatsTablet = ({
     wpm, accuracy, timeLeft,
-    difficulty, setDifficulty,
-    category, setCategory,
-    mode, setMode,
-    duration, setDuration,
-    restartTest,
-    theme
+    difficulty, setDifficulty, category, setCategory,
+    mode, setMode, duration, setDuration,
+    restartTest, theme
 }) => {
 
     return (
-
-        <div
-            className="
-            sticky top-0 z-50
-            backdrop-blur-md
-            flex flex-col gap-4 p-4
-            bg-gray-900/80
-            rounded-lg
-            border border-gray-800
-            "
-        >
-
+        <div className="sticky top-0 z-50 backdrop-blur-md
+            flex flex-col gap-4 p-4 bg-gray-900/50 rounded-b-lg">
 
             {/* TOP STATS ROW */}
+            <div className="flex items-center justify-between" >
 
-            <div
-                className="
-                flex
-                items-center
-                justify-between
-                "
-            >
-
-
-                <div
-                    className="
-                    flex
-                    items-center
-                    gap-6
-                    "
-                >
+                <div className="flex items-center gap-6">
 
                     {/* WPM */}
                     <StatCard
-                        icon={
-                            <FiActivity
-                                className={`w-4 h-4 ${theme.icon}`}
-                            />
-                        }
+                        icon={<LuActivity className={`w-4 h-4 ${theme.icon}`} />}
                         label="WPM"
                         value={wpm || 0}
                         theme={theme}
                     />
 
-
-
                     <div className="h-8 w-px bg-gray-700" />
 
                     {/* Accuracy */}
                     <StatCard
-                        icon={
-                            <FiTarget
-                                className={`w-4 h-4 ${theme.icon}`}
-                            />
-                        }
+                        icon={<LuTarget className={`w-4 h-4 ${theme.icon}`} />}
                         label="ACC"
                         value={`${accuracy}%`}
                         valueClassName={accuracy < 95 ? "text-red-400" : theme.text}
-
                         theme={theme}
                     />
-
-
 
                     <div className="h-8 w-px bg-gray-700" />
 
-
                     {/* Time */}
                     <StatCard
-                        icon={
-                            <FaHourglassEnd
-                                className={`w-4 h-4 ${theme.icon}`}
-                            />
-                        }
+                        icon={<FaHourglassEnd className={`w-4 h-4 ${theme.icon}`} />}
                         label="TIME"
                         value={formatTime(timeLeft)}
                         valueClassName={theme.text}
-
                         theme={theme}
                     />
-
-
                 </div>
-
-
 
                 {/* Restart Button */}
                 <button
@@ -149,10 +88,15 @@ const StatsTablet = ({
 
             {/* CONTROLS ROW */}
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-700">
+            <div className={`flex flex-wrap items-center justify-between gap-3 pt-3 border-t ${theme.border}`}>
 
                 {/* Difficulty */}
                 <OptionSelector
+                    icon={
+                        <MdOutlineWorkspacePremium
+                            className={`w-3 h-3 animate-pulse`}
+                        />
+                    }
                     label="DIFFICULTY"
                     options={difficultyOptions}
                     value={difficulty}
@@ -162,6 +106,11 @@ const StatsTablet = ({
 
                 {/* Category */}
                 <OptionSelector
+                    icon={
+                        <MdOutlineCategory
+                            className={`w-3 h-3  animate-pulse`}
+                        />
+                    }
                     label="CATEGORY"
                     options={categoryOptions}
                     value={category}
@@ -171,6 +120,11 @@ const StatsTablet = ({
 
                 {/* Mode */}
                 <OptionSelector
+                    icon={
+                        <LuGamepad2
+                            className={`w-3 h-3  animate-pulse`}
+                        />
+                    }
                     label="MODE"
                     options={modeOptions}
                     value={mode}
@@ -182,6 +136,11 @@ const StatsTablet = ({
                 {
                     mode === "timed" && (
                         <OptionSelector
+                            icon={
+                                <LuClock
+                                    className={`w-3 h-3 animate-pulse`}
+                                />
+                            }
                             label="DURATION"
                             options={durationOptions}
                             value={duration}

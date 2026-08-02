@@ -1,12 +1,4 @@
-const OptionSelector = ({
-    icon,
-    label,
-    options,
-    value,
-    onChange,
-    theme,
-    variant = "default"
-}) => {
+const OptionSelector = ({icon, label, options, value, onChange, theme, variant = "default"}) => {
     const isMobile = variant === "mobile";
 
     return (
@@ -18,7 +10,7 @@ const OptionSelector = ({
             }
         >
 
-            <span className={`text-xs ${theme.text} opacity-60 font-mono flex items-center gap-1`}>
+            <span className={`text-xs ${theme.textSecondary} opacity-60 font-mono flex items-center gap-1`}>
                 {icon} {label}
             </span>
 
@@ -33,22 +25,18 @@ const OptionSelector = ({
                             onClick={() => onChange(id)}
                             disabled={value === id}
                             title={String(id).toUpperCase()}
-                            className={` flex-1 py-2 px-3 flex items-center justify-center text-sm transition-allfont-medium font-mono duration-200   gap-2  
+                            className={` flex-1 py-2 px-3 flex items-center justify-center text-sm transition-all font-medium font-mono duration-200   gap-2  
                             ${value === id
-                                    ? `${theme.button} text-white shadow-lg ${theme.shadow} cursor-not-allowed`
-                                    : `text-gray-400  cursor-pointer hover:${theme.text} hover:${theme.highlight}`
+                                    ? `${theme.button} ${theme.text} shadow-lg ${theme.shadow} cursor-not-allowed`
+                                    : `${theme.textSecondary} cursor-pointer hover:${theme.text} hover:${theme.highlight}`
                                 }
                             `}
                         >
                             {option.icon ?? `${option}s`}
-
                         </button>
                     )
-
                 })}
-
             </div>
-
         </div>
     )
 
