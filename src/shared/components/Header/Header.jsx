@@ -1,21 +1,24 @@
-import desktopLogo from "../../../assets/logo-large.svg";
-import mobileLogo from "../../../assets/logo-small.svg";
-
-import ThemeSelector from "../../../features/theme/components/ThemeSelector";
-import KeyboardShortcuts from "./KeyboardShortcuts";
-
-import { FaVolumeUp, FaVolumeMute, FaChartLine, FaStar, FaMoon, FaKeyboard, FaSun} from "react-icons/fa";
-import { MdOutlineKeyboard } from "react-icons/md";
+import { useState } from "react";
 import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
 import { useTheme } from "../../../features/theme/hooks/useTheme";
 import { useSoundSettings } from "../../../features/sound/hooks/useSoundSettings";
 import { useThemeNotifications } from "../../../features/notification/hooks/useThemeNotifications";
 import { useSoundNotifications } from "../../../features/notification/hooks/useSoundNotifications";
 
+import ThemeSelector from "../../../features/theme/components/ThemeSelector";
+import KeyboardShortcuts from "./KeyboardShortcuts";
+import Button from "../Button";
+
+import desktopLogo from "../../../assets/logo-large.svg";
+import mobileLogo from "../../../assets/logo-small.svg";
+import { FaVolumeUp, FaVolumeMute, FaChartLine, FaStar, FaMoon, FaKeyboard, FaSun } from "react-icons/fa";
+import { MdOutlineKeyboard } from "react-icons/md";
+
 
 const Header = ({ stats, openHistory, toggleHeatmap, showHeatmap }) => {
     const { best = 0, wpm = 0 } = stats;
     const { soundOn, toggleSound } = useSoundSettings();
+    const [openMenu, setOpenMenu] = useState(null);
 
     useSoundNotifications();
     useThemeNotifications();
@@ -112,85 +115,90 @@ const Header = ({ stats, openHistory, toggleHeatmap, showHeatmap }) => {
                 {/* Right Section */}
                 <div className="flex items-center gap-3">
                     {/* Theme Selector */}
+                    <ThemeSelector
+                        open={openMenu === "theme"}
+                        setOpen={(value) => {
+                            setOpenMenu(value ? "theme" : null);
+                        }}
+                    />
 
 
-                    <ThemeSelector />
 
-                    <button type="button"
+                    {/* Dark/Light */}
+                    <Button
+                        type="button"
+                        variant="icon"
+                        rounded="full"
                         onClick={toggleColorMode}
+                        title={
+                            colorMode === "dark"
+                                ? "Switch to light mode"
+                                : "Switch to dark mode"
+                        }
                         aria-label={
                             colorMode === "dark"
                                 ? "Switch to light mode"
                                 : "Switch to dark mode"
                         }
-                        title="Toggle color mode"
-                        className={`
-                            p-3
-                            rounded-full  transition-all 
-                            ${theme.border}
-                        `}
                     >
-                        {
-                            colorMode === "dark"
-                                ? <FaSun size={18} />
-                                : <FaMoon size={18} />
+                        {colorMode === "dark"
+                            ? <FaSun size={18} />
+                            : <FaMoon size={18} />
                         }
-                    </button>
+                    </Button>
 
                     {/* Sound toggle */}
-                    <button type="button"
+                    <Button
+                        variant="icon"
+                        active={soundOn}
                         onClick={toggleSound}
+                        title={
+                            soundOn
+                                ? "Disable typing sounds"
+                                : "Enable typing sounds"
+                        }
                         aria-label={
                             soundOn
                                 ? "Disable typing sounds"
                                 : "Enable typing sounds"
                         }
-
-                        title="Toggle sound"
-                        className={`
-                           p-2
-                           rounded-lg 
-                            ${soundOn
-                                ? `${theme.accent} shadow-lg ${theme.shadow}`
-                                : "text-gray-500  hover:text-gray-300"
-                            }`}
+                        shadow
+                        className={`${soundOn? "" : "text-gray-500  hover:text-gray-300" }`}
                     >
-                        {
-                            soundOn
-                                ? <FaVolumeUp size={18} />
-                                : <FaVolumeMute size={18} />
-                        }
-                    </button>
+                        {soundOn ? <FaVolumeUp size={18} /> : <FaVolumeMute size={18} />}
+                    </Button>
 
 
                     {/* Keyboard Heatmap Toggle */}
-                    <button
-                        type="button"
+                    <Button
+                        active={showHeatmap}
                         onClick={toggleHeatmap}
                         aria-label="Toggle keyboard heatmap"
                         title="Toggle keyboard heatmap"
-                        className={`hidden xl:flex items-center justify-center p-2 rounded-lg transition-all duration-300 overflow-hidden 
-                              ${showHeatmap
-                                ? `${theme.accent} shadow-lg ${theme.shadow}`
-                                : "text-gray-500  hover:text-gray-300"
-                            } `}
+                        className={`hidden xl:flex ${showHeatmap
+                            ? `${theme.accent} shadow-lg ${theme.shadow}`
+                            : "text-gray-500  hover:text-gray-300"
+                            }`}
                     >
                         <FaKeyboard size={18} />
-                    </button>
+                    </Button>
 
-                    <KeyboardShortcuts />
+
+                    <KeyboardShortcuts
+                        open={openMenu === "shortcuts"}
+                        setOpen={(value) => {
+                            setOpenMenu(value ? "shortcuts" : null);
+                        }}
+                    />
+
                     {/* History Button */}
-                    <button
+                    <Button
                         onClick={openHistory}
-                        aria-label="Open history" 
+                        aria-label="Open history"
                         title="Open history"
-                        className={`
-                            p-2 rounded-lg border-2 transition-all duration-300 overflow-hidden
-                            ${theme.border} ${theme.text}   
-                        `}
                     >
                         <FaChartLine size={16} />
-                    </button>
+                    </Button>
                 </div>
             </div>
         </header>

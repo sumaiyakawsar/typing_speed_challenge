@@ -1,6 +1,6 @@
-import { useState } from "react";
 import { useTheme } from "../../../features/theme/hooks/useTheme";
 import { CgShortcut } from "react-icons/cg";
+import Button from "../Button";
 
 const shortcuts = [
     ["Ctrl + M", "Toggle Sound"],
@@ -10,32 +10,26 @@ const shortcuts = [
     ["Ctrl + K", " Toggle Keyboard Heatmap"]
 ];
 
-const KeyboardShortcuts = () => {
-    const [open, setOpen] = useState(false);
-    const { theme } = useTheme();
-    
+const KeyboardShortcuts = ({
+    open,
+    setOpen
+}) => {
+        const { theme } = useTheme();
+
     return (
         <div className="relative">
-            <button
+
+            <Button
                 type="button"
+                variant="icon"
+                shadow
+                active={open}
                 onClick={() => setOpen(prev => !prev)}
                 aria-label="Keyboard shortcuts"
                 title="Keyboard shortcuts"
-                className={`
-                    p-2
-                    rounded-lg
-                    border-2
-                    bg-black/60
-                    ${theme.border}
-                    ${theme.text}
-                    transition-all
-                    duration-300
-                    hover:scale-105
-                `}
             >
                 <CgShortcut size={18} />
-            </button>
-
+            </Button>
             {open && (
                 <>
                     {/* Close when clicking outside */}

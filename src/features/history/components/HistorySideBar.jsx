@@ -1,33 +1,92 @@
 import { useMemo, useState } from "react";
+import { useTheme } from "../../theme/hooks/useTheme";
 import { getTypingHistory, clearTypingHistory } from "../utils/historyStorage";
-import { IoClose } from "react-icons/io5";
 import { notifications } from "../../notification/notifications";
 
 import HistoryChart from "./HistoryChart";
 import HistoryStats from "./HistoryStats";
 import HistoryList from "./HistoryList";
 import ExportCSV from "./ExportCSV";
+import Button from "../../../shared/components/Button";
+import SelectDropdown from "../../../shared/components/SelectDropdown";
 
-import { useTheme } from "../../theme/hooks/useTheme";
+import { LuGamepad2 } from "react-icons/lu";
+import { MdFilterAltOff, MdClose, MdOutlineWorkspacePremium, MdOutlineCategory } from "react-icons/md";
 
 
 const HistorySidebar = ({ onClose }) => {
 
     const { theme } = useTheme();
 
-
+    const [openFilter, setOpenFilter] = useState(null);
     const [difficulty, setDifficulty] = useState("all");
     const [mode, setMode] = useState("all");
+    const [category, setCategory] = useState("all");
+
     const [history, setHistory] = useState(getTypingHistory());
 
+    const difficultyOptions = [
+        {
+            value: "all",
+            label: "All"
+        },
+        {
+            value: "easy",
+            label: "Easy"
+        },
+        {
+            value: "medium",
+            label: "Medium"
+        },
+        {
+            value: "hard",
+            label: "Hard"
+        }
+    ];
+
+
+    const modeOptions = [
+        {
+            value: "all",
+            label: "All"
+        },
+        {
+            value: "timed",
+            label: "Timed"
+        },
+        {
+            value: "passage",
+            label: "Passage"
+        }
+    ];
+
+    const categoryOptions = [
+        {
+            value: "all",
+            label: "All"
+        },
+        {
+            value: "quotes",
+            label: "Quotes"
+        },
+        {
+            value: "lyrics",
+            label: "Lyrics"
+        },
+        {
+            value: "code",
+            label: "Code"
+        }
+    ];
 
     const filtered = useMemo(() => {
         return history.filter(
             (h) =>
                 (difficulty === "all" || h.difficulty === difficulty) &&
-                (mode === "all" || h.mode === mode)
+                (mode === "all" || h.mode === mode) &&
+                (category === "all" || h.category === category)
         );
-    }, [history, difficulty, mode]);
+    }, [history, difficulty, mode, category]);
 
 
 
@@ -37,28 +96,24 @@ const HistorySidebar = ({ onClose }) => {
         setHistory([]);
     };
 
+    const handleClearFilters = () => {
+        setDifficulty("all");
+        setMode("all");
+        setCategory("all");
+    };
+
     return (
         <>
 
             {/* Overlay */}
-            <div
-                onClick={onClose}
-                className="fixed inset-0 bg-black/40 z-40"
-            />
+            <div onClick={onClose} className="fixed inset-0 bg-black/40 z-40" />
 
 
             {/* Sidebar */}
-            <aside
-                className={`
-                    fixed right-0 top-0 h-full w-full md:w-105
-                    z-99
-                    flex flex-col
-                    ${theme.panel}
-                    border-l
-                    ${theme.border}
+            <aside className={`
+                    fixed right-0 top-0 h-full w-full md:w-105 z-99 flex flex-col ${theme.panel} border-l ${theme.border}
                 `}
             >
-
 
                 {/* Header */}
                 <div
@@ -83,25 +138,21 @@ const HistorySidebar = ({ onClose }) => {
 
                     <div className="flex items-center gap-2">
 
-                        <ExportCSV data={filtered} theme={theme} />
+                        <ExportCSV
+                            data={filtered}
+                            difficulty={difficulty}
+                            mode={mode}
+                            category={category}
+                        />
 
-
-                        <button
+                        <Button
+                            variant="primary"
                             onClick={handleClearHistory}
-                            className={`
-                                text-sm
-                                px-3 py-2
-                                rounded
-                                bg-red-500/10
-                                text-red-400
-                                hover:bg-red-500/20
-                                transition
-                                ${theme.focus}
-                            `}
-                        >
+                            className=" bg-red-500/10  px-3 py-2  text-sm
+                                text-red-400 font-bold 
+                                hover:bg-red-500/20">
                             Clear
-                        </button>
-
+                        </Button>
 
 
                         <button
@@ -113,73 +164,79 @@ const HistorySidebar = ({ onClose }) => {
                                 ${theme.focus}
                             `}
                         >
-                            <IoClose size={20} />
+                            <MdClose size={20} />
                         </button>
                     </div>
                 </div>
 
-
-
                 {/* Filters */}
                 <div className="p-4 flex gap-3">
 
-
-                    <select
+                    <SelectDropdown
+                        icon={MdOutlineWorkspacePremium}
                         value={difficulty}
-                        onChange={(e) => setDifficulty(e.target.value)}
-                        className={`
-                            bg-black/30
-                            border
-                            ${theme.border}
-                            rounded
-                            px-2 py-1
-                            text-sm
-                            ${theme.text}
-                            ${theme.focus}
-                        `}
-                    >
+                        options={difficultyOptions}
+                        theme={theme}
+                        onChange={setDifficulty}
+                        placeholder="Difficulty"
 
-                        <option value="all">
-                            All
-                        </option>
+                        isOpen={openFilter === "difficulty"}
 
-                        <option value="easy">  Easy  </option>
+                        setIsOpen={() =>
+                            setOpenFilter(
+                                openFilter === "difficulty"
+                                    ? null
+                                    : "difficulty"
+                            )
+                        }
+                    />
 
-                        <option value="medium"> Medium </option>
+                    <SelectDropdown
+                        icon={MdOutlineCategory}
+                        value={category}
+                        options={categoryOptions}
+                        theme={theme}
+                        onChange={setCategory}
+                        placeholder="Category"
+                        isOpen={openFilter === "category"}
 
-                        <option value="hard"> Hard </option>
+                        setIsOpen={() =>
+                            setOpenFilter(
+                                openFilter === "category"
+                                    ? null
+                                    : "category"
+                            )
+                        }
+                    />
 
-                    </select>
-
-
-
-                    <select
+                    <SelectDropdown
+                        icon={LuGamepad2}
                         value={mode}
-                        onChange={(e) => setMode(e.target.value)}
-                        className={`
-                            bg-black/30
-                            border
-                            ${theme.border}
-                            rounded
-                            px-2 py-1
-                            text-sm
-                            ${theme.text}
-                            ${theme.focus}
-                        `}
-                    >
+                        options={modeOptions}
+                        theme={theme}
+                        onChange={setMode}
+                        placeholder="Mode"
 
-                        <option value="all">
-                            All
-                        </option>
+                        isOpen={openFilter === "mode"}
 
-                        <option value="timed">
-                            Timed
-                        </option>
+                        setIsOpen={() =>
+                            setOpenFilter(
+                                openFilter === "mode"
+                                    ? null
+                                    : "mode"
+                            )
+                        }
+                    />
 
-                        <option value="passage">
-                            Passage
-                        </option>
-                    </select>
+                    {
+                        (difficulty !== "all" || mode !== "all" || category !== "all") && (
+                            <Button variant="icon"
+                                onClick={handleClearFilters}
+                            >
+                                <MdFilterAltOff />
+                            </Button>
+                        )
+                    }
                 </div>
 
                 {/* Scrollable Content */}
